@@ -4,7 +4,7 @@
 # Remote state configuration for the VPC module
 terraform_remote_outputs = {
     vpc_s3_bucket        = "abra-terraform-states"
-    vpc_s3_key           = "kubernetes/staging/terraform.tfstate"
+    vpc_s3_key           = "kubernetes/vpc/staging.tfstate"
     vpc_s3_key_region    = "us-east-1"
 }
 
