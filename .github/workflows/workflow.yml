@@ -1,11 +1,11 @@
 # This workflow validates the Terraform infrastructure in the Development branch, and applies it for the Staging and Production environments.
-name: VPC
+name: EKS
 
 on:
   push:
     branches:
       - production
-      - staging
+      #- staging
       - development
   workflow_dispatch:
 
@@ -78,10 +78,13 @@ jobs:
         run: terraform init -backend-config=${{env.BACKEND}}
 
       - name: Terraform Plan
-        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
+
+      - name: Terraform Apply - EKS module
+        run: terraform apply -auto-approve "tfplan"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve "tfplan"
+        run: terraform apply -auto-approve
 
       - name: Report Success
         if: success()
@@ -90,7 +93,7 @@ jobs:
 
   production:
     name: Production
-    environment: Production
+    environment: Production       # For manual approval
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/production'
 
@@ -116,10 +119,13 @@ jobs:
         run: terraform init -backend-config=${{env.BACKEND}}
 
       - name: Terraform Plan
-        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
+
+      - name: Terraform Apply - EKS module
+        run: terraform apply -auto-approve "tfplan"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve "tfplan"
+        run: terraform apply -auto-approve
 
       - name: Report Success
         if: success()
