@@ -38,7 +38,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: terraform init -backend-config=${{env.BACKEND}}
+        run: terraform init -backend-config=${{env.BACKEND}} -reconfigure
 
       - name: Terraform Validate
         run: terraform validate
@@ -75,7 +75,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: terraform init -backend-config=${{env.BACKEND}}
+        run: terraform init -backend-config=${{env.BACKEND}} -reconfigure
 
       - name: Terraform Plan
         run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
@@ -116,7 +116,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: terraform init -backend-config=${{env.BACKEND}}
+        run: terraform init -backend-config=${{env.BACKEND}} -reconfigure
 
       - name: Terraform Plan
         run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
