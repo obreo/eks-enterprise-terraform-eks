@@ -1,0 +1,127 @@
+# This workflow validates the Terraform infrastructure in the Development branch, and applies it for the Staging and Production environments.
+name: VPC
+
+on:
+  push:
+    branches:
+      - production
+      - staging
+      - development
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  development:
+    name: Development
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/development'
+
+    env:
+      BACKEND: 'environments/staging/backend.tfvars'
+      VARIABLES: 'environments/staging/staging.tfvars'
+      REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup AWS API
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.REGION}}
+          role-to-assume: ${{secrets.OIDC_ROLE_ARN}}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init -backend-config=${{env.BACKEND}}
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=${{env.VARIABLES}}
+
+      - name: Report Success
+        if: success()
+        run: echo "✅ Terraform validation succeeded!"
+
+
+  staging:
+    name: Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+
+    env:
+      BACKEND: 'environments/staging/backend.tfvars'
+      VARIABLES: 'environments/staging/staging.tfvars'
+      REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup AWS API
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.REGION}}
+          role-to-assume: ${{secrets.OIDC_ROLE_ARN}}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init -backend-config=${{env.BACKEND}}
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve "tfplan"
+
+      - name: Report Success
+        if: success()
+        run: echo "✅ Terraform apply succeeded for the ${{github.ref_name}} environment!"
+              
+
+  production:
+    name: Production
+    environment: Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+
+    env:
+      BACKEND: 'environments/production/backend.tfvars'
+      VARIABLES: 'environments/production/production.tfvars'
+      REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup AWS API
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{env.REGION}}
+          role-to-assume: ${{secrets.OIDC_ROLE_ARN}}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init -backend-config=${{env.BACKEND}}
+
+      - name: Terraform Plan
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve "tfplan"
+
+      - name: Report Success
+        if: success()
+        run: echo "✅ Terraform apply succeeded for the ${{github.ref_name}} environment!"
+              
