@@ -77,14 +77,17 @@ jobs:
       - name: Terraform Init
         run: terraform init -backend-config=${{env.BACKEND}} -reconfigure
 
-      - name: Terraform Plan
+      - name: Terraform Plan - EKS module
         run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
 
       - name: Terraform Apply - EKS module
         run: terraform apply -auto-approve "tfplan"
 
+      - name: Terraform Plan - Generic
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve "tfplan"
 
       - name: Report Success
         if: success()
@@ -118,14 +121,17 @@ jobs:
       - name: Terraform Init
         run: terraform init -backend-config=${{env.BACKEND}} -reconfigure
 
-      - name: Terraform Plan
+      - name: Terraform Plan - EKS module
         run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan -target=module.eks
 
       - name: Terraform Apply - EKS module
         run: terraform apply -auto-approve "tfplan"
 
+      - name: Terraform Plan - Generic
+        run: terraform plan -var-file=${{env.VARIABLES}} -out=tfplan
+
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve "tfplan"
 
       - name: Report Success
         if: success()
