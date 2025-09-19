@@ -1,4 +1,4 @@
-# Collect Info:
+# Collect Info outputs from VPC module:
 data "terraform_remote_state" "vpc" {
   backend = "s3"
   config = {
@@ -38,6 +38,9 @@ module "eks" {
       vpc_cni                         = true
       eks_pod_identity_agent          = true
       amazon_cloudwatch_observability = true
+      aws_mountpoint_s3_csi_driver = {
+          enable        = true # Defaults to false
+      }
     }
   }
 
@@ -52,7 +55,7 @@ module "eks" {
       "environment" = "${var.metadata.environment}",
     }
     capacity_config = {
-      instance_types = ["t3.medium"]
+      instance_types = ["t3.small"]
       disk_size      = 30 # Optional, default to 20GB
     }
     scaling_config = {
