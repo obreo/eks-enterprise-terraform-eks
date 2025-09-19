@@ -55,7 +55,7 @@ module "eks" {
       "environment" = "${var.metadata.environment}",
     }
     capacity_config = {
-      instance_types = ["t3.small"]
+      instance_types = ["t3.medium"]
       disk_size      = 30 # Optional, default to 20GB
     }
     scaling_config = {
