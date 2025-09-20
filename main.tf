@@ -106,12 +106,16 @@ module "eks_bootstrap" {
     }
     nginx_controller    = {
       nginx-external = {
+        alb_config = {
+          alb_family_type         = "dualstack"
+        }
+
         values = [
           yamlencode(
             {
               controller = {
                 service = {
-                  ipFamilies = ["IPv6"]
+                  ipFamilies = ["RequireDualStack"]
                 }
               }
             }
