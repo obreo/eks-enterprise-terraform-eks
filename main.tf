@@ -72,7 +72,7 @@ module "eks_bootstrap" {
 
   integrations = {
     cluster_name = var.metadata.name
-    create_ecr_registry = {
+    ecr_registry = {
       name = lower(var.metadata.name)
     }
 
