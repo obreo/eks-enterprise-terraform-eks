@@ -72,8 +72,15 @@ module "eks_bootstrap" {
 
   integrations = {
     cluster_name = var.metadata.name
-    ecr_registry = {
-      name = lower(var.metadata.name)
+    ecr_registries = {
+      frontend_registry = {
+        name = "${lower(var.metadata.name)}-frontend"
+      }
+
+      backend_registry = {
+        name = "${lower(var.metadata.name)}-backend"
+      }
+      
     }
 
     aws_ebs_csi_driver              = {}
