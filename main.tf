@@ -115,7 +115,7 @@ module "eks_bootstrap" {
             {
               controller = {
                 service = {
-                  ipFamilies = ["RequireDualStack"]
+                  ipFamilyPolicy = ["RequireDualStack"]
                 }
               }
             }
