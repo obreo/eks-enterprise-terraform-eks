@@ -110,17 +110,17 @@ module "eks_bootstrap" {
           alb_family_type         = "dualstack"
         }
 
-        # values = [
-        #   yamlencode(
-        #     {
-        #       controller = {
-        #         service = {
-        #           ipFamilyPolicy = "RequireDualStack"
-        #         }
-        #       }
-        #     }
-        #   )
-        # ]
+        values = [
+          yamlencode(
+            {
+              controller = {
+                service = {
+                  ipFamilies = ["IPv6"]
+                }
+              }
+            }
+          )
+        ]
       }
     }
     aws_alb_controller = {
