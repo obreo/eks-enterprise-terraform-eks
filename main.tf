@@ -91,7 +91,10 @@ module "eks_bootstrap" {
   }
 
   plugins = {
-    cluster_autoscaler  = {}
+    cluster_autoscaler  = {
+      cluster_name = var.metadata.name
+      region = var.metadata.region
+    }
     metrics_server      = {}
     cert_manager        = {}
     argo_cd             = {
