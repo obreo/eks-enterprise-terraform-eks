@@ -3,7 +3,7 @@
 
 # Remote state configuration for the VPC module
 terraform_remote_outputs = {
-    vpc_s3_bucket        = "abra-terraform-states"
+    vpc_s3_bucket        = "my-terraform-state-bucket"
     vpc_s3_key           = "kubernetes/vpc/production.tfstate"
     vpc_s3_key_region    = "us-east-1"
 }
@@ -21,4 +21,3 @@ cluster_settings = {
     custom_group_access_policies = ["eks:ListClusters","eks:DescribeCluster"]
 }
 
-hostname = "rancher.example.com"
