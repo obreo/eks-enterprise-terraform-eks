@@ -46,7 +46,7 @@ module "eks" {
 
   node_settings = {
     cluster_name          = module.eks.cluster_name
-    workernode_subnet_ids = data.terraform_remote_state.vpc.outputs.private_subnet_cidr_blocks
+    workernode_subnet_ids = [data.terraform_remote_state.vpc.outputs.private_subnet_cidr_blocks[0]] # Using a subnet in a single AZ for cost efficiency. Add more subnets for high availability.
     #remote_access = {
     #  enable       = true
     #  ssh_key_name = aws_key_pair.ssh.key_name
